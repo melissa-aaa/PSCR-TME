@@ -1,0 +1,20 @@
+### TME2
+
+Mélissa Lacour (28705068) & Hana Mimouni (28707210)
+
+Question 1.
+	Après une parfaite compilation on a 566193 mots :)
+
+Question 2.
+	Après une parfaite compilation on a 20333 mots :)
+
+Question 3. 
+	Le nombre d'occurences de war est 298
+	Le nombre d'occurences de peace est 114
+	Le nombre d'occurence des autres mots est 0 !
+
+Question 4.
+	La complexité est chaotique, on attend trop. Il faudrait mieux utiliser une table de hachage.
+
+
+
