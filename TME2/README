@@ -1,4 +1,4 @@
-### TME2
+### TME 2
 
 Mélissa Lacour (28705068) & Hana Mimouni (28707210)
 
@@ -11,8 +11,28 @@ Question 2.
 Question 3. 
 	Le nombre d'occurences de war est 298
 	Le nombre d'occurences de peace est 114
-	Le nombre d'occurence des autres mots est 0 !
+	Le nombre d'occurence des autres mots (dont toto) est 0 
 
 Question 4.
-	La complexité est chaotique, on attend trop. Il faudrait mieux utiliser une table de hachage.
+	La complexité est élevée : elle est en O(n²) (n est le nombre de mot du fichier en entrée), on attend trop. Il vaut mieux utiliser une table de hachage.
 
+### TME 3
+
+Question 3.
+
+Question 6.
+
+Question 7.
+	Les valeurs sont toujours les mêmes : 
+		Occurrences de 'war': 298
+		Occurrences de 'peace': 114
+
+Question 8.
+	Exemple 1 : liste des mots qui ont 298 occurences : war
+	Exemple 2 : liste des mots qui ont 50 occurences : gesture darkness burned division journey mentioned relation purpose wine nose king gods shouts interests loud doctors common austerlitz
+	Exemple 3 : liste des mots qui ont 34562 occurences : the
+
+
+Question 9.
+	Pour construire efficacement des sous-groupes de Personnes qui ont le même âge/prénom/autre, on itère le vector<Personne> et pour chaque Personne,
+	on l'insère dans une table de hachage indexée par l'attribut qui nous intéresse (âgeprénom/autre)

@@ -30,7 +30,7 @@ int main () {
 
 		// word est maintenant "tout propre"
 		
-		//on parcourt le vecteur
+		//on parcourt le vecteur pour voir si le mot courant est deja dedans
 		bool trouve = false;
 		for(int i = 0; i<vect.size(); ++i) {
 			if(vect[i].first == word) {
