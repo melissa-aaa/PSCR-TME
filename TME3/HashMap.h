@@ -1,96 +1,157 @@
-#include <iostream>
-#include <fstream>
-#include <regex>
-#include <chrono>
+#ifndef HASH_MAP_H
+#define HASH_MAP_H
 
+#include <iostream>   
+#include <vector>
+#include <forward_list>
+#include <utility>
+#include <string>
+#include <functional>
+//#include <iterator>
 
-int main () {
+namespace pr {
 	using namespace std;
-	using namespace std::chrono;
 
-	ifstream input = ifstream("WarAndPeace.txt");
 
-	auto start = steady_clock::now();
-	cout << "Parsing War and Peace" << endl;
+	template<typename K, typename V>
 
-	//size_t nombre_lu = 0;
-	// prochain mot lu
-	string word;
-	// une regex qui reconnait les caractères anormaux (négation des lettres)
-	regex re( R"([^a-zA-Z])");
-
-	//on crée le vecteur
-	std::vector<pair<string,int>> vect;
-
-	while (input >> word) {
-		// élimine la ponctuation et les caractères spéciaux
-		word = regex_replace ( word, re, "");
-		// passe en lowercase
-		transform(word.begin(),word.end(),word.begin(),::tolower);
-
-		// word est maintenant "tout propre"
+	class HashMap {
+		size_t taille; // Taille de la table de hachage (nombre d'éléments)
+		size_t capaciteMax; // nombre d'éléments max de la table de hachage
+		std::vector<std::forward_list<std::pair<K,V>>> tabHash; //vecteur de listes chaînées pour stocker les éléments
+		//forward_liste est un parcours -> mais consomme moins de mémoire 
 		
-		//on parcourt le vecteur pour voir si le mot courant est deja dedans
-		bool trouve = false;
-		for(int i = 0; i<vect.size(); ++i) {
-			if(vect[i].first == word) {
-				trouve = true;
-				vect[i].second++;
-				break;
+
+        // Fonction de hachage basique pour obtenir un index dans le tableau
+        size_t hash(const K& key) const {
+            //on crée un objet de hashage (fonction standard fournie par C++) 
+            return std::hash<K>{}(key) % capaciteMax;
+        }
+
+		public : 
+
+		//Constructeur  
+		HashMap(size_t capacite) : taille(0), capaciteMax(capacite), tabHash(capacite) {};
+
+		// Fonction pour insérer un élément dans la table de hachage
+		bool put(const K& key, const V& value) {
+			size_t index = hash(key); //chercher l'index de l'élément avec la fonction de hachage 
+			std::forward_list<std::pair<K,V>>& liste = tabHash[index]; // Liste chaînée correspondante à l'index dans la table de hachage
+			bool inserer = false;
+
+			if(existe(key)) {
+				//parcourt les paires et met à jour la valeur 
+				for (std::pair<K,V>& paire : liste){
+					if(paire.first == key) {
+						paire.second = value;
+						inserer = true;
+						return inserer;
+					}
+				}
+                return false;
+			} else {
+				//créer une paire et l'insérer
+				std::pair<K,V> newP = make_pair(key,value);
+				liste.push_front(newP);
+                inserer = true;
+                return inserer;
 			}
 		}
-		if (trouve == false){
-			vect.push_back(pair(word,1));
+
+		//vérifier l'existence avec exists() avant d'utilier get
+		V get(const K& key) {
+			size_t index = hash(key);
+			std::forward_list<std::pair<K,V>>& liste = tabHash[index]; // Liste chaînée correspondante à l'index dans la table de hachage
+
+
+			for(const std::pair<K,V>& paire : liste) {
+				if(paire.first == key) {
+					return paire.second;
+				}
+			}
+
+            //cout << "None value found :/" << endl;
+            return 0; //aucune valeur n'a été trouvée 
 		}
 		
+		bool existe(const K& key) const {
+			size_t index = hash(key); // Chercher l'index de l'élément avec la fonction de hachage
+			const std::forward_list<std::pair<K, V>> & liste = tabHash[index]; // Liste chaînée correspondante à l'index dans la table de hachage
 
-		//if (nombre_lu % 100 == 0)
-			// on affiche un mot "propre" sur 100
-			//cout << nombre_lu << ": "<< word << endl;
-		//nombre_lu++;
-	}
-	input.close();
+			// Parcourir la liste pour vérifier si la clé existe
+			for (const std::pair<K, V>& paire : liste) {
+				if (paire.first == key) {
+					return true; // La clé existe
+				}
+			}
 
-	vect.shrink_to_fit();
-
-	cout << "Finished Parsing War and Peace" << endl;
-
-	auto end = steady_clock::now();
-    cout << "Parsing took "
-              << duration_cast<milliseconds>(end - start).count()
-              << "ms.\n";
-
-    cout << "Found a total of " << vect.size() << " words." << endl;
-	
-	int cpt = 0;
-	string war = "war";
-	string peace = "peace";
-	string toto = "toto";
-	for(int i = 0; i<vect.size(); ++i) {
-		if(vect[i].first == (war)) {
-			cpt++;
-			cout << "Le nombre d'occurences de " << vect[i].first << " est " << vect[i].second << endl;
+			return false; // La clé n'existe pas
 		}
 
-		if(vect[i].first == (peace)) {
-			cpt++;
-			cout << "Le nombre d'occurences de " << vect[i].first << " est " << vect[i].second << endl;
+		// Fonction pour obtenir le nombre d'élément de la table de hachage
+		size_t size() const {
+			return taille;
 		}
 
-		if(vect[i].first == (toto)) {
-			cpt++;
-			cout << "Le nombre d'occurences de " << vect[i].first << " est " << vect[i].second << endl;
+        // méthode renvoie une référence  à la liste chaînée à un index donné (sinon jsp comment faire la 8)
+        vector<pair<K, V>> getAllPairs() const {
+            vector<pair<K, V>> pairs;
+            for (const forward_list<pair<K, V>>& list : tabHash) {
+                for (const pair<K, V>& pair : list) {
+                    pairs.push_back(pair);
+                }
+            }
+            return pairs;
+        }
+
+		typedef pair<K,V>* iterator;
+		class Iterator {
+			std::vector<std::forward_list<std::pair<K,V>>>& pBuckets = &tabHash;
+			int vit = 0;
+			iterator lit = pBuckets[vit];
+
+			iterator & operator++(){
+				lit++;
+				//il existe une valeur suivante dans la liste lit
+				if(lit){
+					return lit;
+				}
+				
+				//cas ou on est au bout de la liste
+				while(pBuckets){
+					if(pBuckets[vit] == NULL){
+						vit++;
+						continue;
+					}
+					lit = pBuckets[vit];
+					break;
+				}
+
+				return lit;
+
+			}
+
+			bool operator!=(const iterator &other){
+				return (this.vit!=other.vit) && (this.lit != other.lit);
+			}
+
+			pair<K,V>& operator*() {
+				return *lit;
+			}
+
+		};
+		
+		iterator begin(){
+			return iterator(&tabHash[0]);
 		}
 
-		if(cpt == 3) {
-			break;
+		iterator end(){
+			return iterator(nullptr);
 		}
-	}
-	if(cpt != 3){
-		cout << "Le nombre d'occurences des autres mots est 0 !" << endl;
-	}
-	
 
-    return 0;
+	};
+
 }
 
+
+#endif

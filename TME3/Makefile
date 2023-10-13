@@ -1,4 +1,4 @@
-all: main HashMap
+all: main HashMap HashMapCopy
 
 main: main.o 
 	g++ -std=c++17 -Wall -o main main.o
