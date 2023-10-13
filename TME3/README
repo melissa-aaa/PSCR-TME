@@ -1,0 +1,20 @@
+### TME 3
+
+Question 3.
+
+Question 6.
+
+Question 7.
+	Les valeurs sont toujours les mêmes : 
+		Occurrences de 'war': 298
+		Occurrences de 'peace': 114
+
+Question 8.
+	Exemple 1 : liste des mots qui ont 298 occurences : war
+	Exemple 2 : liste des mots qui ont 50 occurences : gesture darkness burned division journey mentioned relation purpose wine nose king gods shouts interests loud doctors common austerlitz
+	Exemple 3 : liste des mots qui ont 34562 occurences : the
+
+
+Question 9.
+	Pour construire efficacement des sous-groupes de Personnes qui ont le même âge/prénom/autre, on itère le vector<Personne> et pour chaque Personne,
+	on l'insère dans une table de hachage indexée par l'attribut qui nous intéresse (âgeprénom/autre)

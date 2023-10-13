@@ -12,29 +12,6 @@
 namespace pr {
 	using namespace std;
 
-	// TME 3 Question 1 & 2
-	/*
-	size_t count(iterator begin, iterator end) {
-		size_t cpt = 0;
-		while (begin != end) {
-			cpt++;
-			begin++;
-		}
-		return cpt;
-	}
-
-	template<typename T>
-	size_t count_if_equal(iterator begin, iterator end, const T& val) {
-		size_t cpt = 0;
-		while (begin != end) {
-			if(*begin == val) {
-				cpt++;
-			}
-			begin++;
-		}
-		return cpt;
-	}
-	*/
 
 	template<typename K, typename V>
 
@@ -127,47 +104,9 @@ namespace pr {
             return pairs;
         }
 	
-		typedef pair<K,V>* iterator;
-		class Iterator {
-			std::vector<std::forward_list<std::pair<K,V>>> buckets = tabHash;
-			int vit = 0;
-			iterator lit = buckets[vit].iterator();
-
-			public: 
-				iterator& operator++() { 
-					lit++;
-
-					if(lit == nullptr) {
-						while(lit == nullptr && vit < capaciteMax) {
-							vit++;
-							lit = buckets[vit].iterator();
-						}
-
-						if(vit == capaciteMax && lit == nullptr) {
-							return nullptr;
-						}
-					}
-
-					return lit;
-				}
-
-				bool operator!=(const iterator &other) {
-					return ((this.vit != other.vit) && (this.lit != other.lit));
-				}
-
-				pair<K, V>& operator*() { 
-					return *lit;
-				}
-
+	
 		};
 
-		iterator begin() {
-			return *(tabHash.begin()).begin();
-		}
-
-		iterator end() {
-			return iterator(nullptr);
-		}
 		
 	};
 
