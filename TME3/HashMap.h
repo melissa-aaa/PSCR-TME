@@ -108,18 +108,19 @@ namespace pr {
 		class Iterator {
 			std::vector<std::forward_list<std::pair<K,V>>>& pBuckets = &tabHash;
 			int vit = 0;
-			iterator lit = pBuckets[vit];
+			iterator lit = pBuckets[vit].begin();
 
 			iterator & operator++(){
+				std::cout << "coucou5" << std::endl;
 				lit++;
-				//il existe une valeur suivante dans la liste lit
+				// si cette valeur existe dans la liste lit
 				if(lit){
 					return lit;
 				}
 				
 				//cas ou on est au bout de la liste
 				while(pBuckets){
-					if(pBuckets[vit] == NULL){
+					if(pBuckets[vit] == nullptr){
 						vit++;
 						continue;
 					}
@@ -132,21 +133,27 @@ namespace pr {
 			}
 
 			bool operator!=(const iterator &other){
-				return (this.vit!=other.vit) && (this.lit != other.lit);
+				std::cout << "coucou3" << std::endl;
+				return (this.vit!=other.vit) || (this.lit != other.lit);
 			}
 
 			pair<K,V>& operator*() {
+				std::cout << "coucou4" << std::endl;
 				return *lit;
 			}
 
 		};
 		
 		iterator begin(){
+			std::cout << "coucou0" << std::endl; 
+			//return tabHash[0].iterator();
 			return iterator(&tabHash[0]);
 		}
 
 		iterator end(){
-			return iterator(nullptr);
+			std::cout << "coucou1" << std::endl;
+			return nullptr;
+			//return iterator(nullptr);
 		}
 
 	};
