@@ -1,6 +1,7 @@
 #include "Banque.h"
 
 #include <iostream>
+#include <mutex>
 
 using namespace std;
 
@@ -9,9 +10,12 @@ namespace pr {
 void Banque::transfert(size_t deb, size_t cred, unsigned int val) {
 	Compte & debiteur = comptes[deb];
 	Compte & crediteur = comptes[cred];
+	std::mutex b;
+	b.lock();
 	if (debiteur.debiter(val)) {
 		crediteur.crediter(val);
 	}
+	b.unlock();
 }
 size_t Banque::size() const {
 	return comptes.size();
