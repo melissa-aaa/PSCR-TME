@@ -9,3 +9,13 @@ Question 5.
 
 Question 6.
     Chaque Compte a son mutex. L'opération de transfert du débiteur : si un compte est débiteur dans une thread et créditeur dans une autre thread, ça peut bloquer.
+
+Question 7&8. 
+    Même si les opérations de transfert son protégée par un mutex,
+    le thread comptable pourrait lire des informations incohérentes si une opération de transfert est en cours:
+    Par exemple, le thread comptable lit le solde du compte A (1000), puis le thread transfert débite 100 de A et crédite 100 de B. Cependant, lorsque le thread comptable lit à nouveau le solde de A, il pourrait obtenir l'ancienne valeur (1000) au lieu de la nouvelle (900).
+    Le comptable doit donc bloquer les modification (transferts) des comptes qu'il traite.
+
+Question 10.
+    On pourrait verrouiller tout les comptes comptabilisé et les dévérouiller à la fin de chaque comptabilisation. (mais jsp comment implémenter ça ) OU l'inverse on verrouille tout et on déverouille ce qui est fait au fur et à mesure pour permettre les opérations sur les comptes comptabilisé 
+
