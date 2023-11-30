@@ -33,7 +33,24 @@ void consomateur (Stack<char> * s) {
 	cout << "la 4" << endl;
 }
 
+// handler de CTRL+C
+void handler(int sig) {
+
+}
+
 int main () {
+
+	// handler de CTRL+C
+    sigset_t set;
+    sigemptyset(&set);
+    struct sigaction act;
+    act.sa_handler = handler;
+    act.sa_mask = set;
+    act.sa_flags = 0;
+    sigaction(SIGINT, &act, NULL);
+
+
+	// on crée un segment de mémoire partagée
 	cout << "here" << endl;
 	int fd = shm_open("/monstack", O_RDWR | O_EXCL, 0666);
 	perror("shm_open "); 
@@ -44,6 +61,7 @@ int main () {
 
 	Stack<char> * s = new (ptr) Stack<char>();
 
+	// on crée les producteurs
 	int i = 0;
 	while(i < N){
 		if (fork()==0) {
@@ -52,6 +70,8 @@ int main () {
 		}
 		i++;
 	}
+
+	// on crée les consommateurs
 	i = 0;
 	while(i < M){
 		if (fork()==0) {
@@ -60,6 +80,8 @@ int main () {
 		}
 		i++;
 	}
+
+	// on attend la terminaison de tout le monde
     for(i = 0; i< N+M; i++){
 		wait(0);
 	}
