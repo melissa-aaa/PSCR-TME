@@ -32,7 +32,6 @@ public :
 	}
 
 	~Stack() {
-
 		sem_destroy(&mutex);
 		sem_destroy(&scons);
 		sem_destroy(&sprod);
