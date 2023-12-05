@@ -38,8 +38,8 @@ struct myshm {
   int nb; /* nombre total de messages emis */
   sem_t sem;
   struct message messages[MAX_MESS];
-};
+} MySHM;
 
-char *getName(char *name);
+char* getName(char *name);
 
 #endif
