@@ -2,10 +2,12 @@
 #define COLOR_H_
 
 #include <random>
-#include <iostream>
 #include <algorithm>
 #include <chrono>
+#include <iostream>
+#include <vector>
 
+using namespace std;
 
 namespace pr {
 
@@ -16,7 +18,7 @@ class Color {
 	unsigned char b;
 	friend std::ostream & operator<<(std::ostream & os, const Color & col);
 public:
-	Color(char r,char g, char b):r(r),g(g),b(b) {}
+	Color(int red, int green, int blue) : r(static_cast<uint8_t>(red)), g(static_cast<uint8_t>(green)), b(static_cast<uint8_t>(blue)) {}
 	// default to white
 	Color():r(white.r),g(white.g),b(white.b) {}
 	// shade by ratio / assombrir

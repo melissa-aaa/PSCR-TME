@@ -3,6 +3,7 @@
 
 #include "Vec3D.h"
 #include "Sphere.h"
+#include <iostream>
 #include <vector>
 
 namespace pr {

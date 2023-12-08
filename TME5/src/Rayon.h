@@ -2,6 +2,8 @@
 #define RAYON_H_
 
 #include "Vec3D.h"
+#include <iostream>
+#include <vector>
 
 namespace pr {
 

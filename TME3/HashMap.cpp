@@ -29,8 +29,11 @@ int main(){
 
     //on test les entrées dans le vecteur 
     for(auto& e: vect) {
-        cout << "mot : " << e.cle << "nombre : " << e.valeur << endl;
+        cout << "mot : " << e.cle << " nombre : " << e.valeur << endl;
     }
 
+
+
     return 0;
+
 }

@@ -97,14 +97,14 @@ namespace pr {
 
 				public : 
 					//constructeur 
-					iterator(typename buckets::iterator& bucket, typename buckets::iterator& vit, typename forward_list<Entree>::iterator& lit): pBuckets(bucket), vit(vit), lit(lit){}
+					iterator(const typename buckets::iterator& bucket, const typename buckets::iterator& vit, const typename forward_list<Entree>::iterator& lit): pBuckets(bucket), vit(vit), lit(lit){}
 
 
 					iterator & operator++(){
 						lit++;
 						if(lit == vit->end()) { //si on est au bout de la liste
 							vit++;
-							while (vit != pBuckets && (vit == bucket.end() || vit->empty())) { // si on tombe sur une case vide dans la table de hashage
+							while (vit != pBuckets &&  vit->empty()) { // si on tombe sur une case vide dans la table de hashage
 								++vit;
 							}
 							if(vit != pBuckets) {//on a trouvé une entrée

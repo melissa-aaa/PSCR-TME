@@ -11,7 +11,7 @@ public:
 	double y;
 	double z;
 
-	Vec3D(double x=0,double y=0,double z=0):x(x),y(y),z(z) {}
+	Vec3D(double x=0,double y=0,double z=0):x(x),y(y),z(z) {};
 
 	// somme de vecteurs
 	Vec3D operator+ (const Vec3D & o) const { return Vec3D(x+o.x, y+o.y, z+o.z); }
@@ -29,7 +29,7 @@ public:
 };
 
 // produit par un scalaire (rallonger/reduire) mais scalaire a gauche 3 * v
-Vec3D operator* (double d, const Vec3D & v) ;
+Vec3D operator* (double d, const Vec3D & v) { return v * d; };
 
 } /* namespace pr */
 

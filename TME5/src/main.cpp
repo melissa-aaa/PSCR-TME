@@ -6,6 +6,7 @@
 #include <fstream>
 #include <limits>
 #include <random>
+#include <vector>
 
 using namespace std;
 using namespace pr;

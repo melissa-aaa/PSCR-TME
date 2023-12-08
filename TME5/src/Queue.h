@@ -3,6 +3,8 @@
 
 #include <cstdlib>
 #include <mutex>
+#include <iostream>
+#include <vector>
 
 namespace pr {
 
