@@ -1,6 +1,7 @@
 #include "Vec3D.h"
 #include "Rayon.h"
 #include "Scene.h"
+#include "JobConcret.h"
 #include <iostream>
 #include <algorithm>
 #include <fstream>
@@ -104,61 +105,81 @@ void exportImage(const char * path, size_t width, size_t height, Color * pixels)
 
 int main () {
 
-	std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-	// on pose une graine basee sur la date
-	default_random_engine re(std::chrono::system_clock::now().time_since_epoch().count());
-	// definir la Scene : resolution de l'image
-	Scene scene (1000,1000);
-	// remplir avec un peu d'aléatoire
-	fillScene(scene, re);
-	
-	// lumieres 
-	vector<Vec3D> lights;
-	lights.reserve(3);
-	lights.emplace_back(Vec3D(50, 50, -50));
-	lights.emplace_back(Vec3D(50, 50, 120));
-	lights.emplace_back(Vec3D(200, 0, 120));
+std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+    // Posez une graine basée sur la date
+    default_random_engine re(std::chrono::system_clock::now().time_since_epoch().count());
+    // Définir la scène : résolution de l'image
+    Scene scene (1000, 1000);
+    // Remplir avec un peu d'aléatoire
+    fillScene(scene, re);
 
-	// les points de l'ecran, en coordonnées 3D, au sein de la Scene.
-	// on tire un rayon de l'observateur vers chacun de ces points
-	const Scene::screen_t & screen = scene.getScreenPoints();
+    // Lumières
+    vector<Vec3D> lights;
+    lights.reserve(3);
+    lights.emplace_back(Vec3D(50, 50, -50));
+    lights.emplace_back(Vec3D(50, 50, 120));
+    lights.emplace_back(Vec3D(200, 0, 120));
 
-	// Les couleurs des pixels dans l'image finale
-	Color * pixels = new Color[scene.getWidth() * scene.getHeight()];
+    // Points de l'écran, en coordonnées 3D, au sein de la scène.
+    // On tire un rayon de l'observateur vers chacun de ces points
+    const Scene::screen_t & screen = scene.getScreenPoints();
 
-	// pour chaque pixel, calculer sa couleur
-	for (int x =0 ; x < scene.getWidth() ; x++) {
-		for (int  y = 0 ; y < scene.getHeight() ; y++) {
-			// le point de l'ecran par lequel passe ce rayon
-			auto & screenPoint = screen[y][x];
-			// le rayon a inspecter
-			Rayon  ray(scene.getCameraPos(), screenPoint);
+    // Couleurs des pixels dans l'image finale
+    Color * pixels = new Color[scene.getWidth() * scene.getHeight()];
 
-			int targetSphere = findClosestInter(scene, ray);
+    // Pour chaque pixel, calculer sa couleur sans Pool
+    for (int x = 0; x < scene.getWidth(); x++) {
+        for (int y = 0; y < scene.getHeight(); y++) {
+            auto &screenPoint = screen[y][x];
+            Rayon ray(scene.getCameraPos(), screenPoint);
+            int targetSphere = findClosestInter(scene, ray);
 
-			if (targetSphere == -1) {
-				// keep background color
-				continue ;
-			} else {
-				const Sphere & obj = *(scene.begin() + targetSphere);
-				// pixel prend la couleur de l'objet
-				Color finalcolor = computeColor(obj, ray, scene.getCameraPos(), lights);
-				// le point de l'image (pixel) dont on vient de calculer la couleur
-				Color & pixel = pixels[y*scene.getHeight() + x];
-				// mettre a jour la couleur du pixel dans l'image finale.
-				pixel = finalcolor;
-			}
+            if (targetSphere != -1) {
+                const Sphere &obj = *(scene.begin() + targetSphere);
+                Color finalcolor = computeColor(obj, ray, scene.getCameraPos(), lights);
+                Color &pixel = pixels[y * scene.getHeight() + x];
+                pixel = finalcolor;
+            }
+        }
+    }
 
-		}
-	}
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::cout << "Sequential execution time: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+              << "ms.\n";
 
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-	    std::cout << "Total time "
-	              << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-	              << "ms.\n";
+    // Exporter l'image séquentielle
+    exportImage("sequential.ppm", scene.getWidth(), scene.getHeight(), pixels);
 
-	exportImage("toto.ppm",scene.getWidth(), scene.getHeight() , pixels);
+    // Version avec Pool de threads
+    const int NBTHREADS = 8;
 
-	return 0;
+    Pool pool(10);
+    Barrier b(scene.getWidth() * scene.getHeight());
+    pool.start(NBTHREADS);
+
+    // // Remettre à zéro les couleurs des pixels pour la version parallèle
+    // fill_n(pixels, scene.getWidth() * scene.getHeight(), Color());
+
+    // Pour chaque pixel, calculer sa couleur avec Pool
+    for (int y = 0; y < scene.getHeight(); y++) {
+        // Créer un job qui traitera toute la ligne y
+        pool.submit(new JobConcret(screen[y][0], pixels[y * scene.getWidth()], scene, lights, &b));
+    }
+
+    b.jobWait();  // Attendre la fin de tous les jobs
+    pool.stop();   // Arrêter la pool
+
+    std::chrono::steady_clock::time_point end2 = std::chrono::steady_clock::now();
+    std::cout << "Parallel execution time: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start).count()
+              << "ms.\n";
+
+    // Exporter l'image parallèle
+    exportImage("parallel.ppm", scene.getWidth(), scene.getHeight(), pixels);
+
+    delete[] pixels;  // Libérer la mémoire
+
+    return 0;
 }
 

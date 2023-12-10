@@ -1,4 +1,5 @@
-#pragma once
+#ifndef POOL_H
+#define POOL_H
 
 #include "Queue.h"
 #include "Job.h"
@@ -54,3 +55,5 @@ public:
 };
 
 }
+
+#endif // POOL_H

@@ -29,7 +29,7 @@ public:
 };
 
 // produit par un scalaire (rallonger/reduire) mais scalaire a gauche 3 * v
-Vec3D operator* (double d, const Vec3D & v) { return v * d; };
+inline Vec3D operator* (double d, const Vec3D & v) { return v * d; };
 
 } /* namespace pr */
 
