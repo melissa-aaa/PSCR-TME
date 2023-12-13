@@ -12,24 +12,25 @@
 using namespace std;
 using namespace pr;
 
-class JobConcret : public Job {
+class JobConcret : public Job { //hérite de la classe abstraite Job 
     private:
-        const Vec3D& screenPoint;
-        Color& pixel;
-        const Scene& scene;
-        const vector<Vec3D>& lights;
-        Barrier* barrier;
+        const Vec3D& screenPoint; // référence vers le point sur l'écran à traiter
+        Color& pixel; // référence vers la couleur du pixel associé au point sur l'écran
+        const Scene& scene;  // référence vers la scène 
+        const vector<Vec3D>& lights; // référence constante vers le vecteur de lumières dans la scène
+        Barrier* barrier; // barrière utilisée pour la synchronisation entre les jobs
 
     public:
         JobConcret(const Vec3D& screenPoint, Color& p, const Scene& s, const vector<Vec3D>& l, Barrier* b)
             : screenPoint(screenPoint), pixel(p), scene(s), lights(l), barrier(b) {}
 
-        void run() override {
-            // le rayon 
+        void run() override { //fonction exécuté par chaque thread de la pool au lieu du run de Job 
+            // le rayon  
             Rayon ray(scene.getCameraPos(), screenPoint);
             Color finalcolor;
             auto minz = std::numeric_limits<float>::max();
 
+            //parcourt tous les objets de la scène pour trouver l'intersection la plus proche
             for (const auto& obj : scene) {
                 // rend la distance de l’objet à la camera
                 auto zinter = obj.intersects(ray);

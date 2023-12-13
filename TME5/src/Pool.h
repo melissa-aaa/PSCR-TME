@@ -19,7 +19,7 @@ public:
 
 	void start(int nbthread) {
 		for (int i = 0; i < nbthread; ++i) {
-			threads.emplace_back([this]() { //notation lambda entraîne aucune erreur 
+			threads.emplace_back([this]() { //notation lambda entraîne aucune erreur normalement
 				while (true) {
 					Job* job = queue.pop();
 					if (job == nullptr) {

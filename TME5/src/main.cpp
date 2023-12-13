@@ -171,7 +171,7 @@ std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
     pool.stop();   // Arrêter la pool
 
     std::chrono::steady_clock::time_point end2 = std::chrono::steady_clock::now();
-    std::cout << "Parallel execution time: "
+    std::cout << "temps d'exécution parallèle : "
               << std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start).count()
               << "ms.\n";
 

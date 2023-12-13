@@ -7,45 +7,47 @@
 #include <thread>
 
 namespace pr {
-
-	// fonction passee a ctor de  thread
+	//fonction exécutée par chaque thread de la pool 
 	void poolWorker(Queue<Job> * queue) {
 		while (true) {
+			// récupère un travail depuis la file d'attente
 			Job * j = queue->pop();
 
-			// NB : ajout en fin de TD pour la terminaison propre
+			
 			if (j == nullptr) {
-				// on est non bloquant = il faut sortir
+				// Si le job est nullptr la file est vide => thread doit terminer
+            
 				return;
 			}
 
-			j->run();
+			j->run(); //éxécute le job 
 			delete j;
 		}
 	}
 
 class Pool {
 
-	Queue<Job> queue;
-	std::vector<std::thread> threads;
+	Queue<Job> queue; //file d'attente des jobs à exécuter
+	std::vector<std::thread> threads; //vecteur de threads dans la pool
 public:
 	Pool(int qsize) : queue(qsize) {}
+
 	void start (int nbthread) {
-		threads.reserve(nbthread);
+		threads.reserve(nbthread); //réserve  l'espace pour les threads dans le vecteur
 		for (int i=0 ; i < nbthread ; i++) {
-			threads.emplace_back(poolWorker, &queue);
+			threads.emplace_back(poolWorker, &queue); // fait exécuter poolWorker sur le job de la Queue dans le vecteur des threads 
 		}
 	}
-	// Ajout a la fin du TD, pour la terminaison
+	
 	void stop() {
-		queue.setBlocking(false);
+		queue.setBlocking(false); //file d'attente en mode non bloquant
 		for (auto & t : threads) {
-			t.join();
+			t.join(); //attend fin de chaque thread de la pool
 		}
-		threads.clear();
+		threads.clear(); //vide le vecteur de thread 
 	}
 	~Pool() {
-		stop();
+		stop(); //arrête proprement la pool 
 	}
 	void addJob (Job * job) {
 		queue.push(job);
