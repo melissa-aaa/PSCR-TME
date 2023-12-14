@@ -153,10 +153,12 @@ std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
     // Version avec Pool de threads
     const int NBTHREADS = 8;
+	printf("COUCOU0\n");
 
     Pool pool(10);
-    Barrier b(scene.getWidth() * scene.getHeight());
+    Barrier b(5); //scene.getWidth() * scene.getHeight()
     pool.start(NBTHREADS);
+	printf("COUCOU1\n");
 
     // // Remettre à zéro les couleurs des pixels pour la version parallèle
     // fill_n(pixels, scene.getWidth() * scene.getHeight(), Color());
@@ -166,9 +168,11 @@ std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
         // Créer un job qui traitera toute la ligne y
         pool.submit(new JobConcret(screen[y][0], pixels[y * scene.getWidth()], scene, lights, &b));
     }
+	printf("COUCOU2\n");
 
     b.jobWait();  // Attendre la fin de tous les jobs
     pool.stop();   // Arrêter la pool
+	printf("COUCOU3\n");
 
     std::chrono::steady_clock::time_point end2 = std::chrono::steady_clock::now();
     std::cout << "temps d'exécution parallèle : "
@@ -177,6 +181,7 @@ std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
     // Exporter l'image parallèle
     exportImage("parallel.ppm", scene.getWidth(), scene.getHeight(), pixels);
+	printf("COUCOU4\n");
 
     delete[] pixels;  // Libérer la mémoire
 

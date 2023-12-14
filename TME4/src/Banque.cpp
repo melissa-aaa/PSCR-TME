@@ -19,7 +19,7 @@ namespace pr {
 		unique_lock<mutex> l(m);
 		return comptes.size();
 	}
-	bool comptabiliser (int attendu) const {
+	bool Banque::comptabiliser (int attendu) {
 			unique_lock<mutex> l(m);
 			int bilan = 0;
 			int id = 0;
@@ -28,8 +28,8 @@ namespace pr {
 					cout << "Compte "  <<id<< " en négatif = " << compte.getSolde() << endl;
 
 				}
-				bilan += compte.getSolde():
-				id++
+				bilan += compte.getSolde();
+				id++;
 			}
 			if (bilan != attendu) {
 				cout << "Bilan comptable faux : attendu " << attendu << " obtenu : " << bilan << endl;

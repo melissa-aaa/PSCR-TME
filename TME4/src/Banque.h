@@ -1,7 +1,11 @@
 #pragma once
 
-#include "Compte.h"
 #include <vector>
+#include <mutex>
+
+#include "Compte.h"
+
+using namespace std;
 
 namespace pr {
 
@@ -15,8 +19,10 @@ namespace pr {
 		void transfert(size_t deb, size_t cred, unsigned int val) ;
 		size_t size() const ;
 		
-
-		bool Banque::comptabiliser (int attendu) const;
+		vector<Compte> getComptes() {
+			return comptes; 
+		}
+		bool comptabiliser (int attendu);
 
 		
 	};

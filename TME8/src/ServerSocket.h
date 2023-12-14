@@ -1,7 +1,12 @@
 #ifndef SRC_SERVERSOCKET_H_
 #define SRC_SERVERSOCKET_H_
 
+#include <iostream>
+#include <ostream>
+
 #include "Socket.h"
+
+using namespace std;
 
 namespace pr {
 

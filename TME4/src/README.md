@@ -17,5 +17,5 @@ Question 7&8.
     Le comptable doit donc bloquer les modification (transferts) des comptes qu'il traite.
 
 Question 10.
-    On pourrait verrouiller tout les comptes comptabilisé et les dévérouiller à la fin de chaque comptabilisation. (mais jsp comment implémenter ça ) OU l'inverse on verrouille tout et on déverouille ce qui est fait au fur et à mesure pour permettre les opérations sur les comptes comptabilisé 
+    On pourrait verrouiller tout les comptes comptabilisé et les dévérouiller à la fin de chaque comptabilisation OU l'inverse on verrouille tout et on déverouille ce qui est fait au fur et à mesure pour permettre les opérations sur les comptes comptabilisé 
 

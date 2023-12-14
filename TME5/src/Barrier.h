@@ -15,9 +15,11 @@ public:
     void jobWait() {
         std::unique_lock<std::mutex> lock(mutex);
         if (++completed == count) {
+            printf("HELLO0\n");
             // tous les jobs ont finit => réveiller toutes les threads en attente
             condition.notify_all();
         } else {
+            printf("HELLO1\n");
             // attendre que tous les jobs terminent
             condition.wait(lock);
         }

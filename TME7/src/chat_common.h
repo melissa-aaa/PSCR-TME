@@ -32,13 +32,13 @@ struct message {
   char content[TAILLE_MESS];
 };
 
-struct myshm {
+struct MySHM {
   int read; /* nombre de messages retransmis par le serveur */
   int write; /* nombre de messages non encore retransmis par le serveur */
   int nb; /* nombre total de messages emis */
   sem_t sem;
   struct message messages[MAX_MESS];
-} MySHM;
+};
 
 char* getName(char *name);
 

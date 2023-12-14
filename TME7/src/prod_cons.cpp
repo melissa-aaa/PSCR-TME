@@ -49,7 +49,7 @@ int main () {
 
 	// on crée un segment de mémoire partagée
 	int fd;
-	if((fd = shm_open("/lestack", O_RDWR | O_CREAT | O_EXCL, 0666)) == -1) {
+	if((fd = shm_open("lestack", O_RDWR | O_CREAT | O_EXCL, 0666)) == -1) {
 		perror("shm_open "); 
 	}
 	if(ftruncate(fd, sizeof(Stack<char>))) {
@@ -103,7 +103,7 @@ int main () {
 	// on libère les ressources
 	s->~Stack();
 	munmap(ptr, sizeof(Stack<char>));
-	shm_unlink("/lestack");
+	shm_unlink("lestack");
 
 
 	return EXIT_SUCCESS;

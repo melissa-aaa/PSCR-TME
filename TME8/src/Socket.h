@@ -3,7 +3,13 @@
 
 #include <netinet/ip.h>
 #include <string>
+#include <cstring>
 #include <iosfwd>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+
+using namespace std;
 
 namespace pr {
 
@@ -15,16 +21,16 @@ public :
 	Socket(int fd):fd(fd){}
 
 	// tente de se connecter à l'hôte fourni
-	void Socket::connect(const std::string & host, int port){
-		struct addrinfo  hints;
+	void connect(const std::string & host, int port){
+		struct addrinfo hints;
 		memset(&hints, 0, sizeof(hints));
         hints.ai_family = AF_UNSPEC;    /* Allow IPv4 or IPv6 */
         hints.ai_socktype = SOCK_DGRAM; /* Datagram socket */
         hints.ai_flags = 0;
         hints.ai_protocol = 0;          /* Any protocol */
-		stuct addrinfo* res; 
+		struct addrinfo* res; 
 
-		s = getaddrinfo(host, to_string(port), hints, &res);
+		int s = getaddrinfo(host, to_string(port), hints, &res);
 
 		if (s != 0) {
             fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));

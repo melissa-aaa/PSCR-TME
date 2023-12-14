@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <string>
 
+using namespace std;
+
 
 int main00() {
 	pr::Socket sock;

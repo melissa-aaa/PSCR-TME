@@ -2,6 +2,8 @@
 #include <iostream>
 #include <unistd.h>
 
+using namespace std;
+
 int main00() {
 	pr::ServerSocket ss(1664);
 

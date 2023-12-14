@@ -5,6 +5,7 @@
 #include <mutex>
 #include <iostream>
 #include <vector>
+#include <cstring>
 
 namespace pr {
 

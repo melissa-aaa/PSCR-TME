@@ -32,7 +32,7 @@ int main () {
 		
 		//on parcourt le vecteur pour voir si le mot courant est deja dedans
 		bool trouve = false;
-		for(int i = 0; i<vect.size(); ++i) {
+		for(size_t i = 0; i<vect.size(); ++i) {
 			if(vect[i].first == word) {
 				trouve = true;
 				vect[i].second++;
@@ -66,7 +66,7 @@ int main () {
 	string war = "war";
 	string peace = "peace";
 	string toto = "toto";
-	for(int i = 0; i<vect.size(); ++i) {
+	for(size_t i= 0; i<vect.size(); ++i) {
 		if(vect[i].first == (war)) {
 			cpt++;
 			cout << "Le nombre d'occurences de " << vect[i].first << " est " << vect[i].second << endl;

@@ -17,6 +17,9 @@ prod_cons : prod_cons.o Stack.h
 	g++ -std=c++1y -Wall -o prod_cons prod_cons.o -pthread -lrt
 
 
+serveur.o : serveur.cpp
+	g++ -std=c++1y -Wall -c serveur.cpp -pthread -lrt
+
 
 clean :
 	rm -f *.o pipe prod_cons

@@ -3,6 +3,9 @@
 #include <unistd.h>
 
 
+using namespace std;
+
+
 class IncrementServer : public pr::ConnectionHandler {
 
 public :

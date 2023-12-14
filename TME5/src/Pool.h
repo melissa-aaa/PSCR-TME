@@ -1,59 +1,59 @@
-#ifndef POOL_H
-#define POOL_H
+#ifndef SRC_POOL_H_
+#define SRC_POOL_H_
 
 #include "Queue.h"
 #include "Job.h"
 #include <vector>
 #include <thread>
-#include <iostream>
-#include <algorithm>
-#include <string>
 
 namespace pr {
+	//fonction exécutée par chaque thread de la pool 
+	void poolWorker(Queue<Job> * queue) {
+		while (true) {
+			// récupère un travail depuis la file d'attente
+			Job * j = queue->pop();
+
+			
+			if (j == nullptr) {
+				// Si le job est nullptr la file est vide => thread doit terminer
+            
+				return;
+			}
+
+			j->run(); //éxécute le job 
+			delete j;
+		}
+	}
 
 class Pool {
-	Queue<Job> queue;
-	std::vector<std::thread> threads;
+
+	Queue<Job> queue; //file d'attente des jobs à exécuter
+	std::vector<std::thread> threads; //vecteur de threads dans la pool
 public:
-	Pool(int qsize) : queue(qsize) {} // constructeur 
+	Pool(int qsize) : queue(qsize) {}
 
-	void start(int nbthread) {
-		for (int i = 0; i < nbthread; ++i) {
-			threads.emplace_back([this]() { //notation lambda entraîne aucune erreur normalement
-				while (true) {
-					Job* job = queue.pop();
-					if (job == nullptr) {
-						// queue est vide donc le thread se termine.
-						break;
-					}
-					job->run();
-					delete job; // libérer la mémoire sinon erreur segfault 
-				}
-			});
+	void start (int nbthread) {
+		threads.reserve(nbthread); //réserve  l'espace pour les threads dans le vecteur
+		for (int i=0 ; i < nbthread ; i++) {
+			threads.emplace_back(poolWorker, ref(queue)); // fait exécuter poolWorker sur le job de la Queue dans le vecteur des threads 
 		}
 	}
-
-	void submit(Job* job) {
-		queue.push(job); //ajoute un job à la file d'attente 
-	}
-
+	
 	void stop() {
-		for (int i = 0; i < threads.size(); ++i) {
-			queue.push(nullptr); // thread va s'arrêter car job null 
+		queue.setBlocking(false); //file d'attente en mode non bloquant
+		for (auto & t : threads) {
+			t.join(); //attend fin de chaque thread de la pool
 		}
-
-		// attendre la fin des threads 
-		for (auto& thread : threads) {
-			thread.join();
-		}
+		threads.clear(); //vide le vecteur de thread 
 	}
-
 	~Pool() {
-		stop(); 
+		stop(); //arrête proprement la pool 
 	}
-
+	void addJob (Job * job) {
+		queue.push(job);
+	}
 };
 
-}
+} /* namespace pr */
 
-#endif // POOL_H
+#endif /* SRC_POOL_H_ */

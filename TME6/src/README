@@ -5,75 +5,48 @@
 Question 1. Il y a 10 processus. Voici l'arbre des processus :
 
 main 
-| i:j 1:3
-| | k:j 1:0
-| i:j 2:3
-| | k:j 1:0
-| | k:j 2:0
-| i:j 3:3
-| | k:j 1:0
-| | k:j 2:0
-| | k:j 3:0
+|
+| _____
+|       |i:j 1:3
+x       | 
+        |_______________
+        |               |k:j 1:0 
+        |               |
+        |               |
+        |               x
+        |
+        |_______________
+        x               |i:j 2:3
+                        |
+                        |___________
+                        |           | 
+                        x           |___________
+                                    |           | k:j 1:0
+                                    |           x
+                                    | 
+                                    | 
+                                    |___________           
+                                    |           | k:j 2:0
+                                    |           x
+                                    |
+                                    | 
+                                    | __________
+                                    |           | i:j 3:3
+                                    |           | k:j 1:3   
+                                    |           |___________
+                                    |           |           | k:j 1:0
+                                    |           |           x
+                                    x           |___________
+                                                |           | k:j 2:0
+                                                |           x
+                                                | 
+                                                | 
+                                                |___________           
+                                                |           | k:j 3:0
+                                                |           x
+                                                x
 
-Père (main)
-| N=3 , i=1, j=3 
-|
- _________
-|         | N=3 , i=1, j=3 , cout 1:3 , k=1 
-|         | 
-|          ________
-|         |         | N=3 , i=1, j=3 , k=1
-|         |         | j=0 , cout 1:0
-|         |         | k=2 
-|         |         X
-|         |          
-|         | k=2
-|         X
-|       
-|
-| N=3 , i=2, j=3
- _________
-|         | N=3 , i=2, j=3 , cout 2:3 , k=1
-|         |________
-|         |         | N=3 , i=2, j=3 , k=1
-|         |         | j=0 , cout 1:0
-|         |         | k=2 
-|         |         X
-|         | k=2
-|         | ________
-|         |         | N=3 , i=2, j=3 , k=2
-|         |         | j=0 , cout 2:0
-|         |         | k=3
-|         |         X
-|         |          
-|         | k=3       
-|         X
-|          
-|
-| N=3 , i=3, j=3
- _________
-|         | N=3 , i=3, j=3 , cout 3:3 , k=1
-|         |________
-|         |         | N=3 , i=3, j=3 , k=1
-|         |         | j=0 , cout 1:0
-|         |         | k=2 
-|         |         X
-|         | k=2
-|         | ________
-|         |         | N=3 , i=3, j=3 , k=2
-|         |         | j=0 , cout 2:0
-|         |         | k=3
-|         |         X
-|         |          
-|         | k=3       
-|         | ________
-|         |         | N=3 , i=3, j=3 , k=3
-|         |         | j=0 , cout 3:0
-|         |         | k=4
-|         |         X
-|         |          
-|         | k=4       
-|         X
-|
-| N=3 , i=4, j=3
-X
+
+Question 6 : Luke passe maintenenant plus de temps en défense que Vador :
+en effet vador se défend en ignorant juste les signaux
+alors que Luke les traite avec le handler

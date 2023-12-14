@@ -1,10 +1,13 @@
+#include <cstring>
+
 #include "chat_common.h"
 
 
 
 // gestion des connexions
 int nbConnex = 0;
-char* connexions[MAX_USERS]; // tableau des utilisateurs connectés
+char* connexions[MAX_USERS] = {(char*)0}; // tableau des utilisateurs connectés
+MySHM* shm_utili[MAX_USERS] = {(MySHM*)0}; // tableau des segments des utilisateurs
 
 
 // handler de CTRL+C
@@ -12,22 +15,69 @@ void handler(int sig) {
 	printf("J'ai reçu CTRL+C, libération des ressources puis exit\n");
 }
 
+// supprime le message lu et décale les autres
+void suppMessage(struct message messages, int i) {
+    messages[i] = NULL;
+    for(int j=i; j<MAX_USERS; j++) {
+        if(messages[j]->content == NULL) {
+            continue;
+        } else {
+            messages[j]->content = messages[j+1]->content;
+        }
+    }
+}
+
 
 // connecte un utilisateur
-// hypothèse : id est sous la forme "/id"
+// hypothèse : id est sous la forme "id"
 void connexion(char* id) {
-    if(id == NULL) { printf("connexion : id est NULL\n"); return;}
-    connexions[nbConnex] = n;
-    nbConnex++;
+    if(id == NULL) {
+        printf("connexion : id est NULL\n");
+        return;
+    }
+    if(nbConnex == MAX_USERS) {
+        printf("connexion : plus de place\n");
+        return;
+    }
+    for(int i=0; i<MAX_USERS; i++) {
+        if(connexions[i] == NULL) {
+            connexions[i] = id;
+            nbConnex++;
+
+            int fd;
+            if((fd = shm_open(id, O_RDWR, 0666)) == -1) {
+                perror("shm_open connexion"); 
+            }
+            shmp = mmap(NULL, sizeof(MySHM), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+            shm_utili[i] = shmp;
+            return;
+        }
+    }   
 }
 
 
 // déconnecte un utilisateur
-// hypothèse : id est sous la forme "/id"
+// hypothèse : id est sous la forme "id"
 void deconnexion(char* id) {
-    if(id == NULL) { printf("connexion : id est NULL\n"); return;}
-    nbConnex--;
-    connexions[nbConnex] = NULL;
+        if(id == NULL) {
+        printf("deconnexion : id est NULL\n");
+        return;
+    }
+    if(nbConnex == MAX_USERS) {
+        printf("deconnexion : personne a deconnecter\n");
+        return;
+    }
+    for(int i=0; i<MAX_USERS; i++) {
+        if(strcmp(id, connexions[i]) == 0) {
+            connexions[i] = NULL;
+            nbConnex--;
+
+            munmap(shm_utili[i], sizeof(MySHM));
+	        shm_unlink(id);
+
+            return;
+        }
+    } 
 }
 
 
@@ -79,7 +129,8 @@ int main(int argc, char** argv) {
 
                 case 1: // diffusion de message
                     for(int i=0; i<nbConnex; i++) {
-                        // ecrire message
+                        MySHM* s = shm_utili[i];
+                        s->messages[s->write]->content = m;
                     }
                     break;
 
@@ -95,6 +146,9 @@ int main(int argc, char** argv) {
             shm->read++;
             shm->write--;
         }
+        suppMessage(shm->messages, shm->read);
+        shm->read;
+        shm->write--;
         sem_post(shm->sem);
     }
 
@@ -118,7 +172,7 @@ int main(int argc, char** argv) {
     sem_destroy(shm->sem);
 	free(shm);
 	munmap(ptr, sizeof(MySHM));
-	shm_unlink("idServ");
+	shm_unlink(idServ);
 
 	return EXIT_SUCCESS;
 }

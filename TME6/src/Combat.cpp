@@ -121,7 +121,7 @@ int main() {
     if(luke == 0) {
         srand(time(NULL));
         printf("------ je suis Luke %d et mon père est %d\n", getpid(), getppid());
-        combatLuke(getppid());
+        combat(getppid());
     }
     else { // je suis Vador
         printf("------ je suis Vador %d\n", getpid());
