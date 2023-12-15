@@ -28,7 +28,7 @@ public :
 		sem_init(&mutex, 1, 1);
 		sem_init(&sprod, 1, STACKSIZE);
 		sem_init(&scons, 1, 0);
-		memset(tab,0,sizeof tab);
+		memset(tab,0,sizeof(tab));
 	}
 
 	~Stack() {
@@ -38,8 +38,8 @@ public :
 	}
 
 	T pop () {
-		sem_wait(&(scons));
-		sem_wait(&(mutex));
+		sem_wait(&scons);
+		sem_wait(&mutex);
 		T toret = tab[--sz];
 		sem_post(&(mutex));
 		sem_post(&(sprod));

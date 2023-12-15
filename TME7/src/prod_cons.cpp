@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <semaphore.h>
+#include <signal.h>
 
 #define M 6 // les consommateurs
 #define N 3 // les producteurs

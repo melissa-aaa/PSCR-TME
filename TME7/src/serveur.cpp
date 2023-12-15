@@ -1,5 +1,5 @@
 #include <cstring>
-
+#include <signal.h>
 #include "chat_common.h"
 
 
